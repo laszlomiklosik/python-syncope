@@ -6,16 +6,16 @@
 import syncope
 
 # Create the connection
-syn = syncope.Syncope(syncope_url="http://192.168.10.13:9080", username="admin", password="password")
+syn = syncope.Syncope(syncope_url="http://192.168.10.12:18080/syncope", username="admin", password="password")
 
 # Get the id for the 'wedijkerman' user, before we update it to 'wdijkerman'
-my_user_data = syn.get_user_by_name("wedijkerman")
-my_user_id = my_user_id['id']
-my_user = '{"id": ' + str(my_user_id) + ',"username": "wdijkerman"}'
+my_user_data = syn.get_user_by_name("wdijkerman")
+my_user_id = my_user_data['id']
+my_user = '{"id":655,"attributesToBeUpdated":[{"schema":"uselessReadonly","valuesToBeAdded":[],"valuesToBeRemoved":[]},{"schema":"loginDate","valuesToBeAdded":[],"valuesToBeRemoved":[]},{"schema":"activationDate","valuesToBeAdded":[],"valuesToBeRemoved":[]}],"attributesToBeRemoved":["aLong","makeItDouble"],"derivedAttributesToBeAdded":[],"derivedAttributesToBeRemoved":[],"virtualAttributesToBeUpdated":[],"virtualAttributesToBeRemoved":[],"resourcesToBeAdded":[],"resourcesToBeRemoved":[],"password":null,"username":"wdijkerman","membershipsToBeAdded":[],"membershipsToBeRemoved":[],"pwdPropRequest":{"resources":[],"onSyncope":false}}'
 
-json_output = syn.update_users(my_user)
+json_output = syn.update_user(my_user_id, my_user)
 
 if json_output:
-	print  "User %s created on this time %s" % (json_output['username'])
+	print  "User %s updated" % (json_output['username'])
 else:
-	print "Create failed or user already exists."
+	print "Update failed."

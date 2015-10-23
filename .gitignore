@@ -1,5 +1,5 @@
 # pycharm files
-.idea
+.idea/
 
 # files
 *.pyc
@@ -8,11 +8,11 @@ docs/results.xml
 # Packages
 *.egg
 *.egg-info
-dist
-build
-eggs
-parts
-bin
+dist/
+build/
+eggs/
+parts/
+bin/
 var
 sdist
 develop-eggs
@@ -22,7 +22,9 @@ lib64
 __pycache__
 .cache
 
-
 # build dir
 docs/_build
 docs/generated
+
+# usual virtualenv folder
+env/

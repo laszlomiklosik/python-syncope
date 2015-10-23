@@ -37,11 +37,11 @@ class Syncope(object):
         self.username = username
         self.password = password
         self.timeout = int(timeout)
-        self.rest_logging = 'syncope/cxf/logger/normal'
-        self.rest_log_audit = 'syncope/cxf/logger/audit'
-        self.rest_audit = 'syncope/cxf/audit'
-        self.rest_roles = 'syncope/cxf/roles'
-        self.rest_users = 'syncope/cxf/users'
+        self.rest_logging = 'cxf/logger/normal'
+        self.rest_log_audit = 'cxf/logger/audit'
+        self.rest_audit = 'cxf/audit'
+        self.rest_roles = 'cxf/roles'
+        self.rest_users = 'cxf/users'
 
     def _get(self, rest_path, arguments=None):
         """Will GET the information from the syncope server. This function will be called from the actual actions.
@@ -86,12 +86,12 @@ class Syncope(object):
         return requests.post(syncope_path, auth=(self.username, self.password), headers=self.headers, data=arguments, timeout=self.timeout)
 
     def _put(self, rest_path, arguments=None, params=None):
-        """Will do an PUT action for creating or to update the information from the syncope server. This function will be called from the actual actions.
+        """Will do an PUT action for updating a resource on the syncope server. This function will be called from the actual actions.
 
         :param rest_path: uri of the rest action.
         :param arguments: Optional arguments in JSON format.
         :param params: Optional parameters to the uri, like: ?username=something.
-        :return: Returns the data in json (if any)from the POST request.
+        :return: Returns the data in json (if any)from the PUT request.
         """
         if arguments is None:
             raise ValueError('No arguments are given to PUT.')
@@ -101,7 +101,7 @@ class Syncope(object):
             syncope_path = "{0}/{1}.json".format(self.syncope_url, rest_path)
 
         return requests.put(syncope_path, auth=(self.username, self.password), headers=self.headers, data=arguments, timeout=self.timeout)
-
+    
     def create_user(self, arguments):
         """Will create an user.
 
@@ -113,7 +113,7 @@ class Syncope(object):
         >>> import syncope
         >>> syn = syncope.Syncope(syncope_url="http://192.168.10.13:9080", username="admin", password="password")
         >>> create_user = '{"attributes": [{"schema": "aLong","values": [],"readonly": false},{"schema": "activationDate","values": [""],"readonly": false},{"schema": "cool","values": ["false"],"readonly": false},{"schema": "email","values": ["werner@dj-wasabi.nl"],"readonly": false},{"schema": "firstname","values": ["Werner"],"readonly": false},{"schema": "fullname","values": ["Werner Dijkerman"],"readonly": false},{"schema": "gender","values": ["M"],"readonly": false},{"schema": "loginDate","values": [""],"readonly": false},{"schema": "makeItDouble","values": [],"readonly": false},{"schema": "surname","values": ["Dijkerman"],"readonly": false},{"schema": "type","values": ["account"],"readonly": false},{"schema": "uselessReadonly","values": [""],"readonly": true},{"schema": "userId","values": ["werner@dj-wasabi.nl"],"readonly": false}],"id": 0,"derivedAttributes": [{"schema": "cn","values": [],"readonly": false}],"virtualAttributes": [],"password": "password1234","status": null,"token": null,"tokenExpireTime": null,"username": "wedijkerman","lastLoginDate": null,"creationDate": null,"changePwdDate": null,"failedLogins": null}'
-        >>> print syn.create_users(create_user)
+        >>> print syn.create_user(create_user)
         {u'status': u'active', u'username': u'wedijkerman', u'creationDate': 1444152747171, <cut>}
         """
 
@@ -124,7 +124,7 @@ class Syncope(object):
         else:
             return False
 
-    def update_user(self, arguments):
+    def update_user(self, userId, arguments):
         """Will update an user.
 
         :param arguments: An JSON structure for updating the user. An example can be found in the 'examples' folder.
@@ -138,7 +138,7 @@ class Syncope(object):
         >>> print syn.update_user(update_user)
         {u'status': u'active', u'username': u'wdijkerman', u'creationDate': 1444676322330, <cut>}
         """
-        data = self._post("/syncope/rest/user/update", arguments)
+        data = self._post(self.rest_users + "/" + str(userId), arguments)
 
         if data.status_code == 200:
             return data.json()
